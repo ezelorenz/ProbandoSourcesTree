@@ -1,4 +1,7 @@
-﻿using BibliotecaBitwise.Models;
+﻿using ApiBibliotecaSourcestree.DAL.Interfaces;
+using ApiBibliotecaSourcestree.DTO;
+using AutoMapper;
+using BibliotecaBitwise.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,28 +12,24 @@ namespace ApiBibliotecaSourcestree.Controllers
     [ApiController]
     public class LibroController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public LibroController(ApplicationDbContext context)
+        private readonly IGenericRepository<Libro> _repository;
+        private readonly IMapper _mapper;
+
+        public LibroController(IGenericRepository<Libro> repositor,
+                                IMapper mapper)
         {
-            _context = context;
+            _mapper = mapper;
+            _repository = repositor;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Libro>>> ObtenerTodos()
+        public async Task<ActionResult<IEnumerable<LibroDto>>> ObtenerTodos()
         {
-            var libros = await _context.Libros.ToListAsync();
-            return Ok(libros);
+            var libros = await _repository.ObtenerTodos();
+            var librosDTO = _mapper.Map<IEnumerable<LibroDto>>(libros);
+            return Ok(librosDTO);
         }
-        [HttpGet("{id]")]
-        public async Task<ActionResult<Libro>> ObtenerPorId(int id)
-        {
-            var libros = await _context.Libros.FirstOrDefaultAsync(l => l.Id == id);
-            
-            if (libros == null)
-                return NotFound();
-
-            return Ok(libros);
-        }
+        
     }
 }
