@@ -22,5 +22,15 @@ namespace ApiBibliotecaSourcestree.Controllers
             var libros = await _context.Libros.ToListAsync();
             return Ok(libros);
         }
+        [HttpGet("{id]")]
+        public async Task<ActionResult<Libro>> ObtenerPorId(int id)
+        {
+            var libros = await _context.Libros.FirstOrDefaultAsync(l => l.Id == id);
+            
+            if (libros == null)
+                return NotFound();
+
+            return Ok(libros);
+        }
     }
 }
