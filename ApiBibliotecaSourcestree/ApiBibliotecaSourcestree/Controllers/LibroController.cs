@@ -32,5 +32,19 @@ namespace ApiBibliotecaSourcestree.Controllers
         }
 
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Actualizar(int id, LibroDto libroCreacionDTO)
+        {
+            var libroDesdeRepo = await _repository.Obtener(id);
+            if (libroDesdeRepo == null)
+                return NotFound();
+
+            _mapper.Map(libroCreacionDTO, libroDesdeRepo);
+            var resultado = await _repository.Actualizar(libroDesdeRepo);
+            if (resultado)
+                return NoContent();
+
+            return BadRequest();
+        }
     }
 }
