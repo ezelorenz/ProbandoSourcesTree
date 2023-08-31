@@ -31,6 +31,19 @@ namespace ApiBibliotecaSourcestree.Controllers
             return Ok(librosDTO);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Eliminar(int id)
+        {
+            var libroDesdeRepo = await _repository.Obtener(id);
+            if (libroDesdeRepo == null)
+                return NotFound();
+
+            var resultado = await _repository.Eliminar(id);
+            if (resultado)
+                return NoContent();
+
+            return BadRequest();
+        }
 
     }
 }
